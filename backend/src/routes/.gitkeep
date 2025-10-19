@@ -1,0 +1,6 @@
+# Placeholder file to create the routes directory
+# TODO: Add route files here
+# - authRoutes.ts (authentication endpoints)
+# - matchRoutes.ts (match data and live scores endpoints)
+# - playerRoutes.ts (player information endpoints)
+# - scoreRoutes.ts (scorecard endpoints)
