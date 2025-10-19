@@ -1,0 +1,6 @@
+# Placeholder file to create the controllers directory
+# TODO: Add controller files here
+# - authController.ts (for user authentication)
+# - matchController.ts (for match data and live scores)
+# - playerController.ts (for player information)
+# - scoreController.ts (for scorecard management)
