@@ -1,0 +1,7 @@
+# Placeholder file to create the models directory
+# TODO: Add model files here
+# - User.ts (user authentication model)
+# - Match.ts (cricket match model)
+# - Player.ts (player model)
+# - Score.ts (scorecard model)
+# - Team.ts (team model)
