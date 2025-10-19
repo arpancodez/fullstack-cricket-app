@@ -1,0 +1,6 @@
+# Placeholder file to create the middleware directory
+# TODO: Add middleware files here
+# - authMiddleware.ts (JWT authentication middleware)
+# - errorHandler.ts (error handling middleware)
+# - validateRequest.ts (request validation middleware)
+# - rateLimiter.ts (rate limiting middleware)
