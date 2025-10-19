@@ -1,0 +1,6 @@
+# Placeholder file to create the services directory
+# TODO: Add service files here
+# - cricketAPIService.ts (fetch live cricket data from API)
+# - authService.ts (authentication logic)
+# - dataProcessingService.ts (process and format cricket data)
+# - webSocketService.ts (real-time score updates)
