@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import serverless from 'serverless-http';
 
 // Import routes (when they are implemented)
 // import authRoutes from '../backend/src/routes/authRoutes';
@@ -54,4 +55,4 @@ app.use((err: any, req: Request, res: Response, next: any) => {
 });
 
 // Export the Express app for serverless deployment
-export default app;
+export default serverless(app);
