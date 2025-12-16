@@ -331,3 +331,40 @@ Developed with ❤️ by arpancodez
 - Google Cricket scorecard for UI inspiration
 - Cricket API providers for live data
 - Open source community for amazing tools and libraries
+
+
+## Deployment
+
+This app is optimized for Vercel deployment:
+
+```bash
+vercel deploy
+```
+
+## Environment Variables
+
+```env
+DATABASE_URL=your_mongodb_url
+NEXT_PUBLIC_API_URL=http://localhost:3000
+JWT_SECRET=your_secret_key
+```
+
+## Running Locally
+
+```bash
+npm install
+npm run dev
+```
+
+The application will be available at `http://localhost:3000`
+
+## Performance
+
+- Real-time updates using Socket.io
+- Optimized database queries
+- CDN-ready static assets
+- Response times < 100ms
+
+## License
+
+MIT
