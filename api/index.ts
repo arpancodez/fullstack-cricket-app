@@ -1,3 +1,7 @@
+/**
+ * Main Express server configuration for Fullstack Cricket App
+ * Handles middleware setup, MongoDB connection, and Vercel serverless export
+ */
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
@@ -45,6 +49,10 @@ app.get('/api', (req: Request, res: Response) => {
 // app.use('/api/players', playerRoutes);
 // app.use('/api/scores', scoreRoutes);
 
+/**
+ * Error handling middleware - catches and responds to errors from all routes
+ * Logs errors and returns structured error response with 500 status
+ */
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: any) => {
   console.error(err.stack);
