@@ -31,6 +31,23 @@ interface LoginRequest {
   password: string;
 }
 
+// Validation helper functions
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const isValidPassword = (password: string): boolean => {
+  // Password must be at least 6 characters long
+  return password && password.length >= 6;
+};
+
+const isValidUsername = (username: string): boolean => {
+  // Username must be at least 3 characters and only alphanumeric
+  const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
+  return usernameRegex.test(username);
+};
+
 // In-memory storage (replace with database in production)
 const users: User[] = [];
 
@@ -80,6 +97,28 @@ export default async function handler(
           message: 'Username, email, and password are required'
         });
       }
+      
+    // Enhanced validation using helper functions
+    if (!isValidUsername(username)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username must be at least 3 characters and contain only alphanumeric characters and underscores'
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email address'
+      });
+    }
+
+    if (!isValidPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long'
+      });
+    }
 
       // Check if user already exists
       const existingUser = users.find(u => u.email === email);
