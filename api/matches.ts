@@ -55,6 +55,37 @@ const extractMatchId = (url: string): string | null => {
   return match ? match[1] : null;
 };
 
+/**
+ * Validates match data for creation
+ * @param team1 - First team name
+ * @param team2 - Second team name
+ * @param venue - Match venue
+ * @param date - Match date
+ * @returns object with validation result and error message if invalid
+ */
+const validateMatchData = (
+  team1?: string,
+  team2?: string,
+  venue?: string,
+  date?: string
+): { valid: boolean; error?: string } => {
+  if (!team1 || !team2 || !venue || !date) {
+    return { valid: false, error: 'Team1, team2, venue, and date are required' };
+  }
+  if (team1.trim().length === 0 || team2.trim().length === 0) {
+    return { valid: false, error: 'Team names cannot be empty' };
+  }
+  if (venue.trim().length === 0) {
+    return { valid: false, error: 'Venue cannot be empty' };
+  }
+  try {
+    new Date(date);
+  } catch {
+    return { valid: false, error: 'Invalid date format' };
+  }
+  return { valid: true };
+};
+
 // Main handler function
 export default async function handler(
   req: VercelRequest,
@@ -107,6 +138,24 @@ export default async function handler(
     if (method === 'POST' && !matchId) {
       const { team1, team2, venue, date } = body as CreateMatchRequest;
 
+      // Validate match data
+    const validation = validateMatchData(team1, team2, venue, date);
+    if (!validation.valid) {
+      return res.status(400).json({
+        success: false,
+        message: validation.error
+      });
+    }
+      
+    // Comment out the old validation code below since we now use validateMatchData
+    /*
+    if (!team1 || !team2 || !venue || !date) {
+      return res.status(400).json({
+        success: false,
+        message: 'Team1, team2, venue, and date are required'
+      });
+    }
+    */
       // Validation
       if (!team1 || !team2 || !venue || !date) {
         return res.status(400).json({
