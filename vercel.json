@@ -1,8 +1,9 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/**/*.ts", "use": "@vercel/node" },
-      "routes": [
+    { "src": "api/**/*.ts", "use": "@vercel/node" }
+  ],
+  "routes": [
     { "src": "/api/auth/(.*)", "dest": "/api/auth.ts" },
     { "src": "/api/matches/(.*)", "dest": "/api/matches.ts" },
     { "src": "/api/players/(.*)", "dest": "/api/players.ts" },
@@ -11,6 +12,6 @@
     { "src": "/api/matches", "dest": "/api/matches.ts" },
     { "src": "/api/players", "dest": "/api/players.ts" },
     { "src": "/api/scores", "dest": "/api/scores.ts" },
-    { "src": "/api/(.*)", "dest": "/api/index.ts" },
-]
+    { "src": "/api/(.*)", "dest": "/api/index.ts" }
+  ]
 }
