@@ -69,18 +69,35 @@ interface UpdateScoreRequest {
 // In-memory storage (replace with database in production)
 const scores: Score[] = [];
 
+/**
+ * Extracts score ID from the request URL using regex pattern matching
+ * @param url - The request URL
+ * @returns Score ID if found, null otherwise
+ */
 // Helper function to extract score ID from URL
 const extractScoreId = (url: string): string | null => {
   const match = url.match(/\/api\/scores\/([^\/\?]+)/);
   return match ? match[1] : null;
 };
 
+/**
+ * Calculates the strike rate of a batter (runs per 100 balls)
+ * @param runs - Total runs scored
+ * @param ballsFaced - Total balls faced by the batter
+ * @returns Strike rate percentage or 0 if ballsFaced is 0
+ */
 // Helper function to calculate strike rate
 const calculateStrikeRate = (runs: number, ballsFaced: number): number => {
   if (ballsFaced === 0) return 0;
   return (runs / ballsFaced) * 100;
 };
 
+/**
+ * Calculates the economy rate of a bowler (runs conceded per over)
+ * @param runsConceded - Total runs conceded by the bowler
+ * @param oversBowled - Total overs bowled by the bowler
+ * @returns Economy rate or 0 if oversBowled is 0
+ */
 // Helper function to calculate economy rate
 const calculateEconomyRate = (runsConceded: number, oversBowled: number): number => {
   if (oversBowled === 0) return 0;
