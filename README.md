@@ -368,3 +368,72 @@ The application will be available at `http://localhost:3000`
 ## License
 
 MIT
+
+## 🔌 API Endpoints
+
+The application provides RESTful API endpoints for managing cricket match data:
+
+### Authentication Endpoints
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login user
+- `POST /api/auth/logout` - Logout user
+
+### Match Management Endpoints
+- `GET /api/matches` - Get all matches
+- `GET /api/matches/:id` - Get a specific match
+- `POST /api/matches` - Create a new match
+- `PUT /api/matches/:id` - Update a match
+- `DELETE /api/matches/:id` - Delete a match
+
+### Player Management Endpoints
+- `GET /api/players` - Get all players
+- `GET /api/players/:id` - Get a specific player
+- `POST /api/players` - Create a new player
+- `PUT /api/players/:id` - Update a player
+- `DELETE /api/players/:id` - Delete a player
+
+### Score Management Endpoints
+- `GET /api/scores` - Get all scores
+- `GET /api/scores/:id` - Get a specific score
+- `POST /api/scores` - Create a new score
+- `PUT /api/scores/:id` - Update a score
+- `DELETE /api/scores/:id` - Delete a score
+
+
+## ⚠ Error Handling
+
+The API uses standard HTTP status codes and returns consistent error responses:
+
+```json
+{
+  "success": false,
+  "message": "Error description",
+  "error": "Technical error details (if available)"
+}
+```
+
+Common status codes:
+- `400` - Bad Request (validation errors)
+- `401` - Unauthorized (authentication failed)
+- `404` - Not Found (resource doesn't exist)
+- `500` - Internal Server Error
+
+- ## 🚀 Deployment
+
+### Vercel Deployment
+This application is configured for easy deployment on Vercel:
+
+1. Connect your GitHub repository to Vercel
+2. Set environment variables in Vercel dashboard:
+   - `MONGODB_URI` - MongoDB connection string
+   - `JWT_SECRET` - JWT secret key
+3. Deploy with a single click
+
+### Docker Deployment
+The project includes a `Dockerfile` and `docker-compose.yml` for containerized deployment.
+
+Key improvements in this version:
+- Enhanced input validation on all API endpoints
+- Comprehensive JSDoc comments for better code documentation
+- Structured error handling with consistent response format
+- Support for Vercel serverless functions
