@@ -60,10 +60,42 @@ interface UpdatePlayerRequest {
 // In-memory storage (replace with database in production)
 const players: Player[] = [];
 
+/**
+ * Extracts player ID from the request URL
+ * @param url - The request URL
+ * @returns Player ID if found, null otherwise
+ */
 // Helper function to extract player ID from URL
 const extractPlayerId = (url: string): string | null => {
   const match = url.match(/\/api\/players\/([^\/\?]+)/);
   return match ? match[1] : null;
+};
+
+/**
+ * Validates required player fields for creation
+ * @param name - Player's name
+ * @param team - Player's team
+ * @param role - Player's role in cricket
+ * @param nationality - Player's nationality
+ * @returns validation object with valid boolean and error message if invalid
+ */
+const validatePlayerData = (
+  name?: string,
+  team?: string,
+  role?: string,
+  nationality?: string
+): { valid: boolean; error?: string } => {
+  if (!name || !team || !role || !nationality) {
+    return { valid: false, error: 'Name, team, role, and nationality are required' };
+  }
+  if (name.trim().length === 0 || team.trim().length === 0) {
+    return { valid: false, error: 'Name and team cannot be empty' };
+  }
+  const validRoles = ['batsman', 'bowler', 'all-rounder', 'wicket-keeper'];
+  if (!validRoles.includes(role.toLowerCase())) {
+    return { valid: false, error: 'Invalid player role. Must be: batsman, bowler, all-rounder, or wicket-keeper' };
+  }
+  return { valid: true };
 };
 
 // Main handler function
@@ -127,6 +159,15 @@ export default async function handler(
       const { name, team, role, nationality, battingStyle, bowlingStyle, age } = body as CreatePlayerRequest;
 
       // Validation
+      
+    // Use validatePlayerData helper function for enhanced validation
+    const validation = validatePlayerData(name, team, role, nationality);
+    if (!validation.valid) {
+      return res.status(400).json({
+        success: false,
+        message: validation.error
+      });
+    }
       if (!name || !team || !role || !nationality) {
         return res.status(400).json({
           success: false,
