@@ -1,0 +1,56 @@
+# Ignore development and test files
+node_modules
+npm-debug.log
+yarn-error.log
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode
+.idea
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore documentation
+docs/
+CONTRIBUTING.md
+MIGRATION_GUIDE.md
+LIVE_SCORES_SETUP.md
+
+# Ignore git files
+.git
+.gitignore
+.gitattributes
+
+# Ignore CI/CD files
+.github/
+
+# Ignore lock files in production (Vercel handles these)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore test files
+__tests__
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+jest.config.js
+
+# Ignore build artifacts
+dist/
+build/
+out/
+
+# Frontend specific
+frontend/node_modules
+frontend/.env.local
+frontend/.cache
+frontend/coverage
+
+# Backend specific
+backend/node_modules
+backend/dist
