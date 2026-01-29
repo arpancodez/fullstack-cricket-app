@@ -4,51 +4,40 @@ import axios from 'axios';
  * Cricket API Module
  * Handles all API calls for cricket data
  * 
- * TODO: Replace with actual API endpoint when available
- * Currently using dummy JSON data provider
- * 
  * Features:
- * - Fetch live match data
+ * - Fetch live match data from backend API
  * - Get scorecard details (batting, bowling, commentary)
+ * - Real-time polling for live score updates
  * - Authentication with backend
  */
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const POLLING_INTERVAL = parseInt(process.env.REACT_APP_POLLING_INTERVAL || '5000');
+const ENABLE_LIVE_UPDATES = process.env.REACT_APP_ENABLE_LIVE_UPDATES !== 'false';
 
-// Dummy data provider for testing
-const DUMMY_MATCH_DATA = {
-  matchId: '12345',
-  teams: {
-    team1: { name: 'India', score: '250/6', overs: '45.0' },
-    team2: { name: 'Australia', score: '180/4', overs: '32.3' }
-  },
-  batting: [
-    { player: 'Virat Kohli', runs: 85, balls: 92, fours: 8, sixes: 2, strikeRate: 92.39 },
-    { player: 'Rohit Sharma', runs: 65, balls: 78, fours: 6, sixes: 1, strikeRate: 83.33 }
-  ],
-  bowling: [
-    { bowler: 'Pat Cummins', overs: 8.0, maidens: 2, runs: 42, wickets: 2, economy: 5.25 },
-    { bowler: 'Mitchell Starc', overs: 7.3, maidens: 1, runs: 38, wickets: 1, economy: 5.07 }
-  ],
-  commentary: [
-    { over: 32.3, ball: 3, text: 'Wide! That was way down the leg side' },
-    { over: 32.2, ball: 2, text: 'SIX! What a shot! Over mid-wicket for maximum' }
-  ]
+// Polling intervals map
+const pollingIntervals: { [key: string]: NodeJS.Timeout } = {};
+
+/**
+ * Fetch all live matches
+ */
+export const getMatches = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/matches`);
+    return response.data?.data || [];
+  } catch (error) {
+    console.error('Error fetching matches:', error);
+    throw error;
+  }
 };
 
 /**
- * Fetch live match data
- * @param matchId - The ID of the match
- * @returns Promise with match data
+ * Fetch specific match data
  */
 export const getMatchData = async (matchId: string) => {
   try {
-    // TODO: Replace with actual API call when available
-    // const response = await axios.get(`${API_BASE_URL}/matches/${matchId}`);
-    // return response.data;
-    
-    // Return dummy data for now
-    return DUMMY_MATCH_DATA;
+    const response = await axios.get(`${API_BASE_URL}/matches/${matchId}`);
+    return response.data?.data;
   } catch (error) {
     console.error('Error fetching match data:', error);
     throw error;
@@ -56,16 +45,116 @@ export const getMatchData = async (matchId: string) => {
 };
 
 /**
+ * Fetch live scorecard for a match
+ */
+export const getScorecard = async (matchId: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/scores/${matchId}`);
+    return response.data?.data;
+  } catch (error) {
+    console.error('Error fetching scorecard:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch match commentary
+ */
+export const getCommentary = async (matchId: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/scores/${matchId}/commentary`);
+    return response.data?.data || [];
+  } catch (error) {
+    console.error('Error fetching commentary:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch batting stats for a match
+ */
+export const getBattingStats = async (matchId: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/scores/${matchId}/batting`);
+    return response.data?.data || [];
+  } catch (error) {
+    console.error('Error fetching batting stats:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch bowling stats for a match
+ */
+export const getBowlingStats = async (matchId: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/scores/${matchId}/bowling`);
+    return response.data?.data || [];
+  } catch (error) {
+    console.error('Error fetching bowling stats:', error);
+    throw error;
+  }
+};
+
+/**
+ * Subscribe to live score updates using polling
+ * Periodically fetches scorecard and commentary updates
+ */
+export const subscribeToLiveScores = (
+  matchId: string,
+  callback: (data: any) => void,
+  errorCallback?: (error: any) => void
+) => {
+  if (!ENABLE_LIVE_UPDATES) return;
+
+  // Clear existing interval if any
+  if (pollingIntervals[matchId]) {
+    clearInterval(pollingIntervals[matchId]);
+  }
+
+  // Fetch immediately on subscribe
+  const fetchUpdates = async () => {
+    try {
+      const scorecard = await getScorecard(matchId);
+      const commentary = await getCommentary(matchId);
+      callback({
+        scorecard,
+        commentary,
+        updatedAt: new Date(),
+      });
+    } catch (error) {
+      console.error('Error in live score polling:', error);
+      if (errorCallback) errorCallback(error);
+    }
+  };
+
+  fetchUpdates();
+
+  // Set up polling interval
+  const interval = setInterval(fetchUpdates, POLLING_INTERVAL);
+  pollingIntervals[matchId] = interval;
+
+  return () => unsubscribeFromLiveScores(matchId);
+};
+
+/**
+ * Unsubscribe from live score updates
+ */
+export const unsubscribeFromLiveScores = (matchId: string) => {
+  if (pollingIntervals[matchId]) {
+    clearInterval(pollingIntervals[matchId]);
+    delete pollingIntervals[matchId];
+  }
+};
+
+/**
  * Authenticate user
- * @param userId - User ID
- * @param password - User password
- * @returns Promise with authentication token
  */
 export const authenticateUser = async (userId: string, password: string) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/auth/login`, {
       userId,
-      password
+      password,
     });
     return response.data;
   } catch (error) {
@@ -74,17 +163,14 @@ export const authenticateUser = async (userId: string, password: string) => {
   }
 };
 
-/**
- * Get live scorecard
- * @param matchId - The ID of the match
- * @returns Promise with scorecard data
- */
-export const getScorecard = async (matchId: string) => {
-  try {
-    // TODO: Replace with actual API call
-    return DUMMY_MATCH_DATA;
-  } catch (error) {
-    console.error('Error fetching scorecard:', error);
-    throw error;
-  }
+export default {
+  getMatches,
+  getMatchData,
+  getScorecard,
+  getCommentary,
+  getBattingStats,
+  getBowlingStats,
+  subscribeToLiveScores,
+  unsubscribeFromLiveScores,
+  authenticateUser,
 };
